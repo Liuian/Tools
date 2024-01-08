@@ -1,0 +1,13 @@
+Sub test()
+'Updateby Extendoffice
+    Dim xCount As Integer
+LableNumber:
+    xCount = Application.InputBox("Number of Rows", "Kutools for Excel", , , , , , 1)
+    If xCount < 1 Then
+        MsgBox "the entered number of rows is error, please enter again", vbInformation, "Kutools for Excel"
+        GoTo LableNumber
+    End If
+    ActiveCell.EntireRow.Copy
+    Range(ActiveCell.Offset(1, 0), ActiveCell.Offset(xCount, 0)).EntireRow.Insert Shift:=xlDown
+    Application.CutCopyMode = False
+End Sub
