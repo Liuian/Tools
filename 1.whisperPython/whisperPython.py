@@ -1,6 +1,6 @@
 import whisper
 
-file_path = "/Users/peggy/Documents/youtube影片/11-軟體開發紀錄/(毛片)react-2 video5~7.mp4"
+file_path = "/Users/peggy/Documents/youtube影片/11-軟體開發紀錄/(剪輯)react-2 video5~7.mp4"
 '''
 #一般模式
 model = whisper.load_model("base")
