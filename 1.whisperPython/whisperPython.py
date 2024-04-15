@@ -1,23 +1,26 @@
 import whisper
 
-file_path = "/Users/peggy/Documents/youtube影片/11-軟體開發紀錄/(剪輯)react-2 video5~7.mp4"
+file_path = "/Users/peggy/Documents/youtube影片/11-軟體開發紀錄/（剪輯）react-3.mp4"
+
 '''
-#一般模式
+# 一般模式
 model = whisper.load_model("base")
 
 result = model.transcribe(file_path, fp16=False, language="zh")
 print(result["text"])
 
+# 寫進檔案
 # Write the text portion of the transcription result to a file named result.txt
 # with open("result.txt", "w") as file:
 #     file.write(result["text"])
 '''
 
-#轉為srt檔案
+# 轉為srt檔案
 # 載入模型並進行轉錄
-prompt = '以下是普通話的句子' 
+prompt = '以下是普通話的句子'   # 轉錄成繁體中文 
 model = whisper.load_model("large")
-result = model.transcribe(file_path, fp16=False, language="zh", initial_prompt = prompt)
+#result = model.transcribe(file_path, fp16=False, language="zh", initial_prompt = prompt)
+result = model.transcribe(file_path, fp16=False, initial_prompt = prompt)
 transcription_text = result["text"]
 transcription_segments = result["segments"]
 #print(transcription_segments)
