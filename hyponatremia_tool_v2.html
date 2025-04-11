@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>低血鈉鑑別診斷工具 v2</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h2 class="mb-4">低血鈉鑑別診斷工具 v2</h2>
+
+    <form id="form">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="na" class="form-label">血鈉 (Na, mEq/L)</label>
+          <input type="number" step="0.1" class="form-control" id="na" required>
+        </div>
+        <div class="col-md-6">
+          <label for="serumOsm" class="form-label">血漿滲透壓 (Serum Osm, mOsm/kg)</label>
+          <input type="number" step="0.1" class="form-control" id="serumOsm" required>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="urineOsm" class="form-label">尿液滲透壓 (Urine Osm, mOsm/kg)</label>
+          <input type="number" step="0.1" class="form-control" id="urineOsm" required>
+        </div>
+        <div class="col-md-6">
+          <label for="urineNa" class="form-label">尿鈉 (Urine Na, mEq/L)</label>
+          <input type="number" step="0.1" class="form-control" id="urineNa" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="volumeStatus" class="form-label">臨床體液狀態（Volume Status）</label>
+        <select id="volumeStatus" class="form-select">
+          <option value="">請選擇</option>
+          <option value="hypovolemic">低容量 (Hypovolemic)</option>
+          <option value="euvolemic">正常容量 (Euvolemic)</option>
+          <option value="hypervolemic">高容量 (Hypervolemic)</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="diagnose()">執行鑑別診斷</button>
+    </form>
+
+    <div id="result" class="mt-4 p-3 bg-white border rounded" style="display:none;"></div>
+  </div>
+
+  <script>
+    function diagnose() {
+      const na = parseFloat(document.getElementById('na').value);
+      const serumOsm = parseFloat(document.getElementById('serumOsm').value);
+      const urineOsm = parseFloat(document.getElementById('urineOsm').value);
+      const urineNa = parseFloat(document.getElementById('urineNa').value);
+      const volumeStatus = document.getElementById('volumeStatus').value;
+
+      let diagnosis = "";
+      let suggestion = "";
+
+      if (serumOsm > 295) {
+        diagnosis = "高滲透性低血鈉（可能為高血糖、甘露醇等）。";
+      } else if (serumOsm >= 280 && serumOsm <= 295) {
+        diagnosis = "等滲透性低血鈉，考慮假性低血鈉（如高脂血症、高蛋白血症）。";
+      } else {
+        if (urineOsm < 100) {
+          diagnosis = "尿滲透壓低，考慮原發性多渴症或低溶質攝取。";
+        } else {
+          if (volumeStatus === "hypovolemic") {
+            if (urineNa < 20) {
+              diagnosis = "低容量性低血鈉，尿鈉低，考慮腎外體液流失（如腹瀉、嘔吐）。";
+            } else {
+              diagnosis = "低容量性低血鈉，尿鈉高，考慮腎性流失（如利尿劑、腎上腺不全）。";
+              suggestion = "建議檢查血中Cortisol。";
+            }
+          } else if (volumeStatus === "euvolemic") {
+            diagnosis = "正常容量性低血鈉，考慮SIADH、甲狀腺功能低下、腎上腺不全。";
+            suggestion = "建議檢查TSH與Cortisol。";
+          } else if (volumeStatus === "hypervolemic") {
+            diagnosis = "高容量性低血鈉，考慮心衰、肝硬化、腎衰竭。";
+          } else {
+            diagnosis = "請提供 Volume status，以進一步鑑別診斷。";
+          }
+        }
+      }
+
+      const finalResult = `<h5>初步診斷：</h5><p>${diagnosis}</p>` +
+                          (suggestion ? `<h5>建議檢查：</h5><p>${suggestion}</p>` : "");
+      document.getElementById('result').innerHTML = finalResult;
+      document.getElementById('result').style.display = "block";
+    }
+  </script>
+</body>
+</html>
